@@ -1,0 +1,17 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Google OAuth credentials (from Google Cloud Console)
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+
+# The ID of your Google Sheet (from the URL: /spreadsheets/d/<SHEET_ID>/edit)
+GOOGLE_SHEET_ID = os.getenv("GOOGLE_SHEET_ID")
+
+# The ID of the Google Drive folder where photos will be uploaded
+GOOGLE_DRIVE_FOLDER_ID = os.getenv("GOOGLE_DRIVE_FOLDER_ID")
+
+# Flask secret key (used to sign session cookies)
+SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-change-in-production")
