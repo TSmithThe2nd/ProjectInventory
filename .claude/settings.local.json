@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm --version)"
+      "Bash(npm --version)",
+      "Bash(.venv/Scripts/pip list:*)",
+      "Bash(.venv/Scripts/pip freeze:*)",
+      "Bash(rm -rf .venv)",
+      "Bash(python -m venv .venv)",
+      "Bash(.venv/Scripts/python:*)",
+      "Bash(.venv/Scripts/pip install:*)",
+      "Bash(../.venv/Scripts/python -c \"from app import app; print\\('Flask app created OK'\\)\")"
     ]
   }
 }
