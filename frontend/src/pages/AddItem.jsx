@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { createItem } from '../services/itemService'
+import { createItem, uploadPhoto } from '../services/itemService'
 import './AddItem.css'
 
 const TAGS = ['Plumbing', 'Electrical', 'Drywall', 'Lighting', 'Decor', 'Flooring', 'HVAC', 'General Hardware']
@@ -8,6 +8,8 @@ export default function AddItem({ navigate }) {
   const [form, setForm] = useState({
     name: '', description: '', quantity: '', unit: '', location: '', tags: [], notes: '',
   })
+  const [photoFile, setPhotoFile] = useState(null)
+  const [photoPreview, setPhotoPreview] = useState(null)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
 
@@ -17,15 +19,33 @@ export default function AddItem({ navigate }) {
     form.tags.includes(tag) ? form.tags.filter(t => t !== tag) : [...form.tags, tag]
   )
 
+  const handlePhoto = e => {
+    const file = e.target.files[0]
+    if (!file) return
+    setPhotoFile(file)
+    setPhotoPreview(URL.createObjectURL(file))
+  }
+
+  const removePhoto = () => {
+    setPhotoFile(null)
+    setPhotoPreview(null)
+  }
+
   const handleSubmit = async e => {
     e.preventDefault()
     setSaving(true)
     setError(null)
     try {
-      await createItem(form)
+      let photo_url = null
+      if (photoFile) {
+        const result = await uploadPhoto(photoFile)
+        photo_url = result.photo_url
+      }
+      await createItem({ ...form, photo_url })
       navigate('home')
-    } catch {
-      setError('Failed to save — is the backend running?')
+    } catch (err) {
+      console.error('Save failed:', err)
+      setError(`Failed to save: ${err.message}`)
       setSaving(false)
     }
   }
@@ -37,6 +57,23 @@ export default function AddItem({ navigate }) {
         <h1>Add Item</h1>
       </header>
       <form className="add-form" onSubmit={handleSubmit}>
+
+        <div className="field">
+          <label>Photo</label>
+          {photoPreview ? (
+            <div className="photo-preview">
+              <img src={photoPreview} alt="Preview" />
+              <button type="button" className="photo-remove" onClick={removePhoto}>× Remove</button>
+            </div>
+          ) : (
+            <label className="photo-input-label" htmlFor="photo">
+              📷 Take or choose a photo
+              <input id="photo" type="file" accept="image/*" capture="environment"
+                onChange={handlePhoto} />
+            </label>
+          )}
+        </div>
+
         <div className="field">
           <label htmlFor="name">Name *</label>
           <input id="name" value={form.name} onChange={e => set('name', e.target.value)}

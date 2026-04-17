@@ -22,6 +22,9 @@ Thumbs.db
 # Vite local config
 *.local
 
+# Uploaded photos (local storage, will move to Google Drive)
+backend/uploads/
+
 # Google service account key (if added later)
 *.json.key
 credentials.json
