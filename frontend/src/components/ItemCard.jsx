@@ -1,17 +1,20 @@
 import './ItemCard.css'
 
+const PHOTO_BASE = 'http://localhost:5000'
+
 export default function ItemCard({ item, onClick }) {
   return (
     <div className="item-card" onClick={onClick} role="button" tabIndex={0}>
+      <div className="card-thumb">
+        {item.photo_url
+          ? <img src={`${PHOTO_BASE}${item.photo_url}`} alt="" />
+          : <span className="card-thumb-placeholder">📦</span>
+        }
+      </div>
       <div className="card-main">
         <span className="card-id">{item.id}</span>
         <h3 className="card-name">{item.name}</h3>
-        {item.location && <p className="card-location">{item.location}</p>}
-      </div>
-      <div className="card-meta">
-        {item.quantity !== undefined && item.quantity !== '' && (
-          <span className="card-qty">{item.quantity}{item.unit ? ` ${item.unit}` : ''}</span>
-        )}
+        {item.location && <p className="card-location">📍 {item.location}</p>}
         {item.tags?.length > 0 && (
           <div className="card-tags">
             {item.tags.slice(0, 2).map(tag => (
@@ -23,6 +26,12 @@ export default function ItemCard({ item, onClick }) {
           </div>
         )}
       </div>
+      {item.quantity !== undefined && item.quantity !== '' && (
+        <div className="card-qty-badge">
+          <span className="card-qty">{item.quantity}</span>
+          {item.unit && <span className="card-unit">{item.unit}</span>}
+        </div>
+      )}
     </div>
   )
 }

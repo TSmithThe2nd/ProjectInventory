@@ -2,9 +2,43 @@ from flask import Blueprint, jsonify, request
 
 items_bp = Blueprint("items", __name__)
 
-# In-memory placeholder — will be replaced with Google Sheets calls in Phase 1
-_items = []
-_counter = 1
+# In-memory placeholder — will be replaced with SQLite in the next phase
+_items = [
+    {
+        "id": "INV-0001",
+        "name": "PVC Pipe ½ inch",
+        "description": "Standard white PVC, 10ft lengths",
+        "quantity": 14,
+        "unit": "pcs",
+        "location": "123 Main St – Storage Room",
+        "tags": ["Plumbing"],
+        "notes": "Check for cracks before use",
+        "photo_url": None,
+    },
+    {
+        "id": "INV-0002",
+        "name": "LED Recessed Lights 6\"",
+        "description": "Dimmable, 5000K daylight, retrofit kit",
+        "quantity": 8,
+        "unit": "pcs",
+        "location": "456 Oak Ave – Garage Shelf B",
+        "tags": ["Electrical", "Lighting"],
+        "notes": "",
+        "photo_url": None,
+    },
+    {
+        "id": "INV-0003",
+        "name": "Drywall Screws 1-5/8\"",
+        "description": "Coarse thread, phosphate coated",
+        "quantity": 3,
+        "unit": "boxes",
+        "location": "123 Main St – Storage Room",
+        "tags": ["Drywall", "General Hardware"],
+        "notes": "",
+        "photo_url": None,
+    },
+]
+_counter = 4
 
 
 def _next_id():

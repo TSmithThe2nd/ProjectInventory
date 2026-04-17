@@ -37,8 +37,20 @@ export default function Home({ navigate }) {
       </div>
       <main className="home-list">
         {loading && <p className="list-state">Loading…</p>}
-        {!loading && filtered.length === 0 && (
-          <p className="list-state">No items found.</p>
+        {!loading && items.length === 0 && (
+          <div className="empty-state">
+            <span className="empty-icon">📦</span>
+            <h2>No items yet</h2>
+            <p>Start building your inventory by adding your first item.</p>
+            <button className="empty-cta" onClick={() => navigate('add-item')}>+ Add First Item</button>
+          </div>
+        )}
+        {!loading && items.length > 0 && filtered.length === 0 && (
+          <div className="empty-state">
+            <span className="empty-icon">🔍</span>
+            <h2>No results</h2>
+            <p>Try a different search or tag filter.</p>
+          </div>
         )}
         {filtered.map(item => (
           <ItemCard key={item.id} item={item} onClick={() => navigate('item-detail', item.id)} />
