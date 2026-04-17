@@ -14,3 +14,14 @@ frontend/dist/
 
 # IntelliJ
 .idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Vite local config
+*.local
+
+# Google service account key (if added later)
+*.json.key
+credentials.json
