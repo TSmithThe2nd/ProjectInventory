@@ -28,3 +28,6 @@ backend/uploads/
 # Google service account key (if added later)
 *.json.key
 credentials.json
+
+#ignore db changes
+backend/instance/inventory.db

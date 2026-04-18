@@ -14,6 +14,7 @@ export default function ItemCard({ item, onClick }) {
       <div className="card-main">
         <span className="card-id">{item.id}</span>
         <h3 className="card-name">{item.name}</h3>
+        {item.description && <p className="card-description">{item.description}</p>}
         {item.location && <p className="card-location">📍 {item.location}</p>}
         {item.tags?.length > 0 && (
           <div className="card-tags">
