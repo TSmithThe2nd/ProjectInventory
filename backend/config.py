@@ -15,3 +15,6 @@ GOOGLE_DRIVE_FOLDER_ID = os.getenv("GOOGLE_DRIVE_FOLDER_ID")
 
 # Flask secret key (used to sign session cookies)
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-change-in-production")
+
+# SQLite database file — lives in the backend directory
+DATABASE_URI = os.getenv("DATABASE_URI", "sqlite:///inventory.db")
