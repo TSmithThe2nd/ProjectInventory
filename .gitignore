@@ -3,6 +3,10 @@
 
 # Python virtual environment
 .venv/
+venv/
+
+# SQLite database (local dev only)
+backend/instance/
 
 # Python cache files
 __pycache__/
