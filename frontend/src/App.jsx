@@ -7,6 +7,20 @@ function App() {
   const [page, setPage] = useState('home')
   const [selectedId, setSelectedId] = useState(null)
   const [offline, setOffline] = useState(!navigator.onLine)
+  const [authChecked, setAuthChecked] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/auth/me', { credentials: 'include' })
+      .then(res => res.json())
+      .then(data => {
+        if (!data.authenticated) {
+          window.location.href = '/api/auth/login'
+        } else {
+          setAuthChecked(true)
+        }
+      })
+      .catch(() => setAuthChecked(true))
+  }, [])
 
   useEffect(() => {
     const on = () => setOffline(false)
@@ -21,6 +35,8 @@ function App() {
     setPage(target)
   }
 
+  if (!authChecked) return null
+
   return (
     <>
       {offline && (
@@ -31,7 +47,7 @@ function App() {
           You're offline — showing cached inventory
         </div>
       )}
-      {page === 'home' && <Home navigate={navigate} />}
+      {page === 'home' && <Home navigate={navigate} offline={offline} />}
       {page === 'add-item' && <AddItem navigate={navigate} />}
       {page === 'item-detail' && <ItemDetail itemId={selectedId} navigate={navigate} />}
     </>

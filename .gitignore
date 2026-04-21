@@ -31,3 +31,4 @@ credentials.json
 
 #ignore db changes
 backend/instance/inventory.db
+backend/service_account.json

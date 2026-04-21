@@ -15,7 +15,18 @@
 
 .home-header h1 { font-size: 24px; font-weight: 700; }
 
+.header-right { display: flex; align-items: center; gap: 10px; }
+
 .item-count { font-size: 14px; color: var(--text); }
+
+.sync-btn {
+  font-size: 13px; padding: 4px 12px;
+  background: var(--primary, #2563eb); color: #fff;
+  border: none; border-radius: 6px; cursor: pointer;
+}
+.sync-btn:disabled { opacity: 0.6; cursor: default; }
+
+.sync-msg { font-size: 13px; color: var(--text); }
 
 .home-controls {
   padding: 12px 16px 0;

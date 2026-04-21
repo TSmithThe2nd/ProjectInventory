@@ -7,6 +7,7 @@ from routes.tags import tags_bp
 from routes.locations import locations_bp
 from routes.sync import sync_bp
 from routes.uploads import uploads_bp
+from routes.auth import auth_bp
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
@@ -16,13 +17,14 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
 
-CORS(app, origins=["http://localhost:5173"])
+CORS(app, origins=["http://localhost:5173"], supports_credentials=True)
 
 app.register_blueprint(items_bp, url_prefix="/api")
 app.register_blueprint(tags_bp, url_prefix="/api")
 app.register_blueprint(locations_bp, url_prefix="/api")
 app.register_blueprint(sync_bp, url_prefix="/api")
 app.register_blueprint(uploads_bp, url_prefix="/api")
+app.register_blueprint(auth_bp, url_prefix="/api")
 
 with app.app_context():
     db.create_all()

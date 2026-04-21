@@ -1,6 +1,6 @@
 import './ItemCard.css'
 
-const PHOTO_BASE = 'http://localhost:5000'
+const PHOTO_BASE = ''
 
 export default function ItemCard({ item, onClick }) {
   return (
