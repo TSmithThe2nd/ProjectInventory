@@ -3,6 +3,7 @@ import SearchBar from '../components/SearchBar'
 import TagFilter from '../components/TagFilter'
 import ItemCard from '../components/ItemCard'
 import { getItems } from '../services/itemService'
+import API_BASE from '../config'
 import './Home.css'
 
 const TAGS = ['Plumbing', 'Electrical', 'Drywall', 'Lighting', 'Decor', 'Flooring', 'HVAC', 'General Hardware']
@@ -19,7 +20,7 @@ export default function Home({ navigate, offline }) {
     setSyncing(true)
     setSyncMsg(null)
     try {
-      const res = await fetch('/api/sync', { method: 'POST', credentials: 'include' })
+      const res = await fetch(`${API_BASE}/api/sync`, { method: 'POST', credentials: 'include' })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Sync failed')
       setSyncMsg(`Synced ${data.synced} items`)

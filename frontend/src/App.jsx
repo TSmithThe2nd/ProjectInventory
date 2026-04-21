@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Home from './pages/Home'
 import AddItem from './pages/AddItem'
 import ItemDetail from './pages/ItemDetail'
+import API_BASE from './config'
 
 function App() {
   const [page, setPage] = useState('home')
@@ -10,11 +11,11 @@ function App() {
   const [authChecked, setAuthChecked] = useState(false)
 
   useEffect(() => {
-    fetch('/api/auth/me', { credentials: 'include' })
+    fetch(`${API_BASE}/api/auth/me`, { credentials: 'include' })
       .then(res => res.json())
       .then(data => {
         if (!data.authenticated) {
-          window.location.href = '/api/auth/login'
+          window.location.href = `${API_BASE}/api/auth/login`
         } else {
           setAuthChecked(true)
         }

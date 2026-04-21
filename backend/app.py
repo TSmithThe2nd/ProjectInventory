@@ -14,6 +14,8 @@ app.secret_key = SECRET_KEY
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SESSION_COOKIE_SAMESITE"] = "None"
+app.config["SESSION_COOKIE_SECURE"] = True
 
 db.init_app(app)
 

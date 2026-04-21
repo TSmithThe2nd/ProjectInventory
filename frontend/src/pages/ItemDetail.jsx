@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { getItem, updateItem, deleteItem, uploadPhoto } from '../services/itemService'
+import API_BASE from '../config'
 import './ItemDetail.css'
 
 const TAGS = ['Plumbing', 'Electrical', 'Drywall', 'Lighting', 'Decor', 'Flooring', 'HVAC', 'General Hardware']
-const PHOTO_BASE = ''
+const PHOTO_BASE = API_BASE
 
 export default function ItemDetail({ itemId, navigate }) {
   const [item, setItem] = useState(null)
