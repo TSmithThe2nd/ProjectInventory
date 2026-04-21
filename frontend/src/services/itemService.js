@@ -1,9 +1,17 @@
-const BASE = 'http://localhost:5000/api'
+const BASE = '/api'
 
 export async function getItems() {
-  const res = await fetch(`${BASE}/items`)
-  if (!res.ok) throw new Error('Failed to fetch items')
-  return res.json()
+  try {
+    const res = await fetch(`${BASE}/items`)
+    if (!res.ok) throw new Error('Failed to fetch items')
+    const data = await res.json()
+    localStorage.setItem('cached_items', JSON.stringify(data))
+    return data
+  } catch (err) {
+    const cached = localStorage.getItem('cached_items')
+    if (cached) return JSON.parse(cached)
+    throw err
+  }
 }
 
 export async function createItem(data) {

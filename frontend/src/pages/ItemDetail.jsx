@@ -3,7 +3,7 @@ import { getItem, updateItem, deleteItem, uploadPhoto } from '../services/itemSe
 import './ItemDetail.css'
 
 const TAGS = ['Plumbing', 'Electrical', 'Drywall', 'Lighting', 'Decor', 'Flooring', 'HVAC', 'General Hardware']
-const PHOTO_BASE = 'http://localhost:5000'
+const PHOTO_BASE = ''
 
 export default function ItemDetail({ itemId, navigate }) {
   const [item, setItem] = useState(null)

@@ -1,11 +1,13 @@
-import os
 import uuid
-from flask import Blueprint, request, jsonify, send_from_directory, current_app
+from flask import Blueprint, request, jsonify, session, Response
 from werkzeug.utils import secure_filename
+from services.auth_service import get_credentials_from_session
+from services.drive_service import upload_photo, delete_photo, get_photo
 
 uploads_bp = Blueprint("uploads", __name__)
 
 ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "webp", "heic"}
+MIME_TYPES = {"jpg": "image/jpeg", "jpeg": "image/jpeg", "png": "image/png", "webp": "image/webp", "heic": "image/heic"}
 
 
 def _allowed(filename):
@@ -13,7 +15,11 @@ def _allowed(filename):
 
 
 @uploads_bp.route("/upload", methods=["POST"])
-def upload_photo():
+def upload():
+    creds = get_credentials_from_session(session)
+    if not creds:
+        return jsonify({"error": "Not authenticated"}), 401
+
     if "photo" not in request.files:
         return jsonify({"error": "No file provided"}), 400
 
@@ -23,15 +29,26 @@ def upload_photo():
 
     ext = secure_filename(file.filename).rsplit(".", 1)[1].lower()
     filename = f"{uuid.uuid4().hex}.{ext}"
+    mime_type = MIME_TYPES.get(ext, "image/jpeg")
 
-    upload_dir = os.path.join(current_app.root_path, "uploads")
-    os.makedirs(upload_dir, exist_ok=True)
-    file.save(os.path.join(upload_dir, filename))
-
-    return jsonify({"photo_url": f"/api/uploads/{filename}"}), 201
+    photo_url = upload_photo(creds, file.read(), filename, mime_type)
+    return jsonify({"photo_url": photo_url}), 201
 
 
-@uploads_bp.route("/uploads/<filename>")
-def serve_photo(filename):
-    upload_dir = os.path.join(current_app.root_path, "uploads")
-    return send_from_directory(upload_dir, filename)
+@uploads_bp.route("/image/<file_id>")
+def proxy_image(file_id):
+    creds = get_credentials_from_session(session)
+    if not creds:
+        return jsonify({"error": "Not authenticated"}), 401
+    data, mime_type = get_photo(creds, file_id)
+    return Response(data, mimetype=mime_type)
+
+
+@uploads_bp.route("/upload/<file_id>", methods=["DELETE"])
+def remove_photo(file_id):
+    creds = get_credentials_from_session(session)
+    if not creds:
+        return jsonify({"error": "Not authenticated"}), 401
+
+    delete_photo(creds, file_id)
+    return jsonify({"deleted": file_id})
