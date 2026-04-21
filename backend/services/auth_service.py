@@ -1,6 +1,6 @@
 from google_auth_oauthlib.flow import Flow
 from google.oauth2.credentials import Credentials
-from config import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+from config import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI
 
 SCOPES = [
     "openid",
@@ -8,8 +8,6 @@ SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file",
 ]
-
-REDIRECT_URI = "http://localhost:5173/api/auth/callback"
 
 CLIENT_CONFIG = {
     "web": {

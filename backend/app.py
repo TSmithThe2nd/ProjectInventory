@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
-from config import SECRET_KEY, DATABASE_URI
+from config import SECRET_KEY, DATABASE_URI, FRONTEND_URL
 from database import db
 from routes.items import items_bp
 from routes.tags import tags_bp
@@ -17,7 +17,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
 
-CORS(app, origins=["http://localhost:5173"], supports_credentials=True)
+CORS(app, origins=[FRONTEND_URL], supports_credentials=True)
 
 app.register_blueprint(items_bp, url_prefix="/api")
 app.register_blueprint(tags_bp, url_prefix="/api")
@@ -30,4 +30,4 @@ with app.app_context():
     db.create_all()
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=False, port=5000)

@@ -1,5 +1,6 @@
 from flask import Blueprint, redirect, request, session, jsonify
 from services.auth_service import get_auth_url, exchange_code_for_token, get_credentials_from_session
+from config import FRONTEND_URL
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -21,7 +22,7 @@ def callback():
 
     token_data = exchange_code_for_token(code, state)
     session["google_token"] = token_data
-    return redirect("http://localhost:5173")
+    return redirect(FRONTEND_URL)
 
 
 @auth_bp.route("/auth/logout")

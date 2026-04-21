@@ -18,3 +18,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-change-in-production")
 
 # SQLite database file — lives in the backend directory
 DATABASE_URI = os.getenv("DATABASE_URI", "sqlite:///inventory.db")
+
+# Frontend origin and OAuth redirect (set in .env for local, env vars in production)
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+REDIRECT_URI = os.getenv("REDIRECT_URI", "http://localhost:5173/api/auth/callback")
