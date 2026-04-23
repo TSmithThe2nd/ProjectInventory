@@ -1,7 +1,7 @@
-from flask import Blueprint, jsonify, session
+from flask import Blueprint, jsonify
 from database import db
 from models.item import Item
-from services.auth_service import get_credentials_from_session
+from services.auth_service import get_credentials
 from services.sheets_service import sync_all_items, get_all_items
 
 sync_bp = Blueprint("sync", __name__)
@@ -9,7 +9,7 @@ sync_bp = Blueprint("sync", __name__)
 
 @sync_bp.route("/sync", methods=["POST"])
 def sync_to_sheets():
-    creds = get_credentials_from_session(session)
+    creds = get_credentials()
     if not creds:
         return jsonify({"error": "Not authenticated"}), 401
 
@@ -20,7 +20,7 @@ def sync_to_sheets():
 
 @sync_bp.route("/sync/status", methods=["GET"])
 def sync_status():
-    creds = get_credentials_from_session(session)
+    creds = get_credentials()
     if not creds:
         return jsonify({"error": "Not authenticated"}), 401
 

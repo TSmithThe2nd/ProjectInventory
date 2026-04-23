@@ -19,8 +19,12 @@ export default function Home({ navigate, offline }) {
   const handleSync = async () => {
     setSyncing(true)
     setSyncMsg(null)
+    const token = localStorage.getItem('auth_token')
     try {
-      const res = await fetch(`${API_BASE}/api/sync`, { method: 'POST', credentials: 'include' })
+      const res = await fetch(`${API_BASE}/api/sync`, {
+        method: 'POST',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+      })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Sync failed')
       setSyncMsg(`Synced ${data.synced} items`)

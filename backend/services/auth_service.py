@@ -1,6 +1,8 @@
+import os
+from itsdangerous import URLSafeSerializer
 from google_auth_oauthlib.flow import Flow
 from google.oauth2.credentials import Credentials
-from config import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI
+from config import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI, SECRET_KEY
 
 SCOPES = [
     "openid",
@@ -19,20 +21,34 @@ CLIENT_CONFIG = {
     }
 }
 
+_state_s = URLSafeSerializer(SECRET_KEY, salt="oauth-state")
+_token_s = URLSafeSerializer(SECRET_KEY, salt="auth-token")
+
 
 def _build_flow():
     return Flow.from_client_config(CLIENT_CONFIG, scopes=SCOPES, redirect_uri=REDIRECT_URI)
 
 
+def generate_state():
+    return _state_s.dumps(os.urandom(16).hex())
+
+
+def verify_state(state):
+    try:
+        _state_s.loads(state)
+        return True
+    except Exception:
+        return False
+
+
 def get_auth_url():
-    """Return the Google OAuth URL and state token to redirect the user to for login."""
+    state = generate_state()
     flow = _build_flow()
-    auth_url, state = flow.authorization_url(access_type="offline", prompt="consent")
+    auth_url, _ = flow.authorization_url(access_type="offline", prompt="consent", state=state)
     return auth_url, state
 
 
-def exchange_code_for_token(code, state):
-    """Exchange the authorization code from Google's redirect for an access token."""
+def exchange_code_for_token(code):
     flow = _build_flow()
     flow.fetch_token(code=code)
     creds = flow.credentials
@@ -46,11 +62,11 @@ def exchange_code_for_token(code, state):
     }
 
 
-def get_credentials_from_session(session):
-    """Rebuild Google API credentials from the token dict stored in the Flask session."""
-    token_data = session.get("google_token")
-    if not token_data:
-        return None
+def generate_auth_token(token_data):
+    return _token_s.dumps(token_data)
+
+
+def _build_credentials(token_data):
     return Credentials(
         token=token_data["token"],
         refresh_token=token_data["refresh_token"],
@@ -59,3 +75,15 @@ def get_credentials_from_session(session):
         client_secret=token_data["client_secret"],
         scopes=token_data["scopes"],
     )
+
+
+def get_credentials():
+    from flask import request
+    auth_header = request.headers.get("Authorization", "")
+    if not auth_header.startswith("Bearer "):
+        return None
+    try:
+        token_data = _token_s.loads(auth_header[7:])
+        return _build_credentials(token_data)
+    except Exception:
+        return None

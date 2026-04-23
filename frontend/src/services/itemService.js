@@ -1,10 +1,13 @@
-import API_BASE from '../config'
+const BASE = '/api'
 
-const BASE = `${API_BASE}/api`
+function authHeader() {
+  const token = localStorage.getItem('auth_token')
+  return token ? { 'Authorization': `Bearer ${token}` } : {}
+}
 
 export async function getItems() {
   try {
-    const res = await fetch(`${BASE}/items`, { credentials: 'include' })
+    const res = await fetch(`${BASE}/items`, { headers: authHeader() })
     if (!res.ok) throw new Error('Failed to fetch items')
     const data = await res.json()
     localStorage.setItem('cached_items', JSON.stringify(data))
@@ -19,8 +22,7 @@ export async function getItems() {
 export async function createItem(data) {
   const res = await fetch(`${BASE}/items`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
+    headers: { 'Content-Type': 'application/json', ...authHeader() },
     body: JSON.stringify(data),
   })
   if (!res.ok) throw new Error('Failed to create item')
@@ -28,7 +30,7 @@ export async function createItem(data) {
 }
 
 export async function getItem(id) {
-  const res = await fetch(`${BASE}/items/${id}`, { credentials: 'include' })
+  const res = await fetch(`${BASE}/items/${id}`, { headers: authHeader() })
   if (!res.ok) throw new Error('Item not found')
   return res.json()
 }
@@ -36,7 +38,7 @@ export async function getItem(id) {
 export async function uploadPhoto(file) {
   const body = new FormData()
   body.append('photo', file)
-  const res = await fetch(`${BASE}/upload`, { method: 'POST', credentials: 'include', body })
+  const res = await fetch(`${BASE}/upload`, { method: 'POST', headers: authHeader(), body })
   if (!res.ok) throw new Error('Failed to upload photo')
   return res.json()
 }
@@ -44,8 +46,7 @@ export async function uploadPhoto(file) {
 export async function updateItem(id, data) {
   const res = await fetch(`${BASE}/items/${id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
+    headers: { 'Content-Type': 'application/json', ...authHeader() },
     body: JSON.stringify(data),
   })
   if (!res.ok) throw new Error('Failed to update item')
@@ -53,7 +54,7 @@ export async function updateItem(id, data) {
 }
 
 export async function deleteItem(id) {
-  const res = await fetch(`${BASE}/items/${id}`, { method: 'DELETE', credentials: 'include' })
+  const res = await fetch(`${BASE}/items/${id}`, { method: 'DELETE', headers: authHeader() })
   if (!res.ok) throw new Error('Failed to delete item')
   return res.json()
 }
