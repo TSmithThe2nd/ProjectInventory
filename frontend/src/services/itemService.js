@@ -4,7 +4,7 @@ const BASE = `${API_BASE}/api`
 
 export async function getItems() {
   try {
-    const res = await fetch(`${BASE}/items`)
+    const res = await fetch(`${BASE}/items`, { credentials: 'include' })
     if (!res.ok) throw new Error('Failed to fetch items')
     const data = await res.json()
     localStorage.setItem('cached_items', JSON.stringify(data))
@@ -20,6 +20,7 @@ export async function createItem(data) {
   const res = await fetch(`${BASE}/items`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify(data),
   })
   if (!res.ok) throw new Error('Failed to create item')
@@ -27,7 +28,7 @@ export async function createItem(data) {
 }
 
 export async function getItem(id) {
-  const res = await fetch(`${BASE}/items/${id}`)
+  const res = await fetch(`${BASE}/items/${id}`, { credentials: 'include' })
   if (!res.ok) throw new Error('Item not found')
   return res.json()
 }
@@ -35,7 +36,7 @@ export async function getItem(id) {
 export async function uploadPhoto(file) {
   const body = new FormData()
   body.append('photo', file)
-  const res = await fetch(`${BASE}/upload`, { method: 'POST', body })
+  const res = await fetch(`${BASE}/upload`, { method: 'POST', credentials: 'include', body })
   if (!res.ok) throw new Error('Failed to upload photo')
   return res.json()
 }
@@ -44,6 +45,7 @@ export async function updateItem(id, data) {
   const res = await fetch(`${BASE}/items/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify(data),
   })
   if (!res.ok) throw new Error('Failed to update item')
@@ -51,7 +53,7 @@ export async function updateItem(id, data) {
 }
 
 export async function deleteItem(id) {
-  const res = await fetch(`${BASE}/items/${id}`, { method: 'DELETE' })
+  const res = await fetch(`${BASE}/items/${id}`, { method: 'DELETE', credentials: 'include' })
   if (!res.ok) throw new Error('Failed to delete item')
   return res.json()
 }
