@@ -1,13 +1,12 @@
+import { authImageUrl } from '../services/itemService'
 import './ItemCard.css'
-
-const PHOTO_BASE = ''
 
 export default function ItemCard({ item, onClick }) {
   return (
     <div className="item-card" onClick={onClick} role="button" tabIndex={0}>
       <div className="card-thumb">
         {item.photo_url
-          ? <img src={`${PHOTO_BASE}${item.photo_url}`} alt="" />
+          ? <img src={authImageUrl(item.photo_url)} alt="" />
           : <span className="card-thumb-placeholder">📦</span>
         }
       </div>

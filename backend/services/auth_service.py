@@ -80,10 +80,15 @@ def _build_credentials(token_data):
 def get_credentials():
     from flask import request
     auth_header = request.headers.get("Authorization", "")
-    if not auth_header.startswith("Bearer "):
-        return None
-    try:
-        token_data = _token_s.loads(auth_header[7:])
-        return _build_credentials(token_data)
-    except Exception:
-        return None
+    if auth_header.startswith("Bearer "):
+        try:
+            return _build_credentials(_token_s.loads(auth_header[7:]))
+        except Exception:
+            pass
+    token_param = request.args.get("token")
+    if token_param:
+        try:
+            return _build_credentials(_token_s.loads(token_param))
+        except Exception:
+            pass
+    return None

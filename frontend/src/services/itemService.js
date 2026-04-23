@@ -1,5 +1,11 @@
 const BASE = '/api'
 
+export function authImageUrl(url) {
+  if (!url) return url
+  const token = localStorage.getItem('auth_token')
+  return token ? `${url}?token=${encodeURIComponent(token)}` : url
+}
+
 function authHeader() {
   const token = localStorage.getItem('auth_token')
   return token ? { 'Authorization': `Bearer ${token}` } : {}
