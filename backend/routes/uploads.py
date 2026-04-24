@@ -16,8 +16,7 @@ def _allowed(filename):
 
 @uploads_bp.route("/upload", methods=["POST"])
 def upload():
-    creds = get_credentials()
-    if not creds:
+    if not get_credentials():
         return jsonify({"error": "Not authenticated"}), 401
 
     if "photo" not in request.files:
@@ -31,24 +30,24 @@ def upload():
     filename = f"{uuid.uuid4().hex}.{ext}"
     mime_type = MIME_TYPES.get(ext, "image/jpeg")
 
-    photo_url = upload_photo(creds, file.read(), filename, mime_type)
+    photo_url = upload_photo(file.read(), filename, mime_type)
     return jsonify({"photo_url": photo_url}), 201
 
 
 @uploads_bp.route("/image/<file_id>")
 def proxy_image(file_id):
-    creds = get_credentials()
-    if not creds:
+    if not get_credentials():
         return jsonify({"error": "Not authenticated"}), 401
-    data, mime_type = get_photo(creds, file_id)
-    return Response(data, mimetype=mime_type)
+    try:
+        data, mime_type = get_photo(file_id)
+        return Response(data, mimetype=mime_type)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @uploads_bp.route("/upload/<file_id>", methods=["DELETE"])
 def remove_photo(file_id):
-    creds = get_credentials()
-    if not creds:
+    if not get_credentials():
         return jsonify({"error": "Not authenticated"}), 401
-
-    delete_photo(creds, file_id)
+    delete_photo(file_id)
     return jsonify({"deleted": file_id})
