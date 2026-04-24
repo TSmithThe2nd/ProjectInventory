@@ -1,13 +1,13 @@
 from googleapiclient.discovery import build
 from config import GOOGLE_SHEET_ID
-from services.google_service_account import get_service_account_credentials
+from services.google_service_account import get_admin_credentials
 
 RANGE = "Sheet1!A:Z"
 HEADERS = ["id", "name", "description", "photo_url", "location", "tags", "date_added", "added_by", "quantity", "unit", "notes"]
 
 
 def _service():
-    return build("sheets", "v4", credentials=get_service_account_credentials())
+    return build("sheets", "v4", credentials=get_admin_credentials())
 
 
 def get_all_items():

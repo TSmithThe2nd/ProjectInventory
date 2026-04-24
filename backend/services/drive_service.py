@@ -2,11 +2,11 @@ import io
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload, MediaIoBaseDownload
 from config import GOOGLE_DRIVE_FOLDER_ID
-from services.google_service_account import get_service_account_credentials
+from services.google_service_account import get_admin_credentials
 
 
 def _service():
-    return build("drive", "v3", credentials=get_service_account_credentials())
+    return build("drive", "v3", credentials=get_admin_credentials())
 
 
 def upload_photo(file_bytes, filename, mime_type="image/jpeg"):
