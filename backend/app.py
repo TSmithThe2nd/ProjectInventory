@@ -28,10 +28,21 @@ app.register_blueprint(auth_bp, url_prefix="/api")
 with app.app_context():
     db.create_all()
     from models.item import Item
-    _old = Item.query.filter(Item.photo_url.like("/api/image/%")).all()
-    for _item in _old:
-        _item.photo_url = f"https://drive.google.com/uc?id={_item.photo_url[len('/api/image/'):]}&export=view"
-    if _old:
+    from urllib.parse import urlparse, parse_qs
+    _changed = False
+    for _item in Item.query.filter(Item.photo_url.isnot(None)).all():
+        url = _item.photo_url
+        if url.startswith("/api/image/"):
+            file_id = url[len("/api/image/"):]
+            _item.photo_url = f"https://drive.usercontent.google.com/download?id={file_id}&export=view"
+            _changed = True
+        elif "drive.google.com/uc" in url:
+            qs = parse_qs(urlparse(url).query)
+            file_id = (qs.get("id") or [""])[0]
+            if file_id:
+                _item.photo_url = f"https://drive.usercontent.google.com/download?id={file_id}&export=view"
+                _changed = True
+    if _changed:
         db.session.commit()
 
 if __name__ == "__main__":

@@ -19,7 +19,7 @@ def upload_photo(file_bytes, filename, mime_type, creds):
         body={"role": "reader", "type": "anyone"},
         fields="id",
     ).execute()
-    return f"https://drive.google.com/uc?id={file_id}&export=view"
+    return f"https://drive.usercontent.google.com/download?id={file_id}&export=view"
 
 
 def delete_photo(file_id, creds):
