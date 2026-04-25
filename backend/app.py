@@ -32,16 +32,13 @@ with app.app_context():
     _changed = False
     for _item in Item.query.filter(Item.photo_url.isnot(None)).all():
         url = _item.photo_url
-        if url.startswith("/api/image/"):
-            file_id = url[len("/api/image/"):]
-            _item.photo_url = f"https://drive.usercontent.google.com/download?id={file_id}&export=view"
-            _changed = True
-        elif "drive.google.com/uc" in url:
+        file_id = None
+        if "drive.google.com/uc" in url or "drive.usercontent.google.com" in url:
             qs = parse_qs(urlparse(url).query)
-            file_id = (qs.get("id") or [""])[0]
-            if file_id:
-                _item.photo_url = f"https://drive.usercontent.google.com/download?id={file_id}&export=view"
-                _changed = True
+            file_id = (qs.get("id") or [""])[0] or None
+        if file_id:
+            _item.photo_url = f"/api/image/{file_id}"
+            _changed = True
     if _changed:
         db.session.commit()
 

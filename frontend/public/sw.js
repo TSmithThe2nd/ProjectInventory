@@ -38,6 +38,9 @@ self.addEventListener('fetch', event => {
     return
   }
 
+  // Pass through non-GET requests (POST, DELETE, etc.) without caching
+  if (request.method !== 'GET') return
+
   // Cache-first for static assets (JS, CSS, images)
   if (request.destination !== 'document') {
     event.respondWith(

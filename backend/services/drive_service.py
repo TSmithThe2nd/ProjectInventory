@@ -1,6 +1,6 @@
 import io
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaIoBaseUpload
+from googleapiclient.http import MediaIoBaseUpload, MediaIoBaseDownload
 from config import GOOGLE_DRIVE_FOLDER_ID
 
 
@@ -13,13 +13,20 @@ def upload_photo(file_bytes, filename, mime_type, creds):
     media = MediaIoBaseUpload(io.BytesIO(file_bytes), mimetype=mime_type)
     file_meta = {"name": filename, "parents": [GOOGLE_DRIVE_FOLDER_ID]}
     uploaded = svc.files().create(body=file_meta, media_body=media, fields="id").execute()
-    file_id = uploaded["id"]
-    svc.permissions().create(
-        fileId=file_id,
-        body={"role": "reader", "type": "anyone"},
-        fields="id",
-    ).execute()
-    return f"https://drive.usercontent.google.com/download?id={file_id}&export=view"
+    return f"/api/image/{uploaded['id']}"
+
+
+def get_photo(file_id, creds):
+    svc = _service(creds)
+    meta = svc.files().get(fileId=file_id, fields="mimeType").execute()
+    mime_type = meta.get("mimeType", "image/jpeg")
+    fh = io.BytesIO()
+    downloader = MediaIoBaseDownload(fh, svc.files().get_media(fileId=file_id))
+    done = False
+    while not done:
+        _, done = downloader.next_chunk()
+    fh.seek(0)
+    return fh.read(), mime_type
 
 
 def delete_photo(file_id, creds):

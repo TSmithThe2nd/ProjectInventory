@@ -1,8 +1,8 @@
 import uuid
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, Response
 from werkzeug.utils import secure_filename
 from services.auth_service import get_credentials
-from services.drive_service import upload_photo, delete_photo
+from services.drive_service import upload_photo, delete_photo, get_photo
 
 uploads_bp = Blueprint("uploads", __name__)
 
@@ -33,6 +33,18 @@ def upload():
 
     photo_url = upload_photo(file.read(), filename, mime_type, creds)
     return jsonify({"photo_url": photo_url}), 201
+
+
+@uploads_bp.route("/image/<file_id>")
+def proxy_image(file_id):
+    creds = get_credentials()
+    if not creds:
+        return jsonify({"error": "Not authenticated"}), 401
+    try:
+        data, mime_type = get_photo(file_id, creds)
+        return Response(data, mimetype=mime_type)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @uploads_bp.route("/upload/<file_id>", methods=["DELETE"])
