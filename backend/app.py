@@ -27,6 +27,12 @@ app.register_blueprint(auth_bp, url_prefix="/api")
 
 with app.app_context():
     db.create_all()
+    from models.item import Item
+    _old = Item.query.filter(Item.photo_url.like("/api/image/%")).all()
+    for _item in _old:
+        _item.photo_url = f"https://drive.google.com/uc?id={_item.photo_url[len('/api/image/'):]}&export=view"
+    if _old:
+        db.session.commit()
 
 if __name__ == "__main__":
     app.run(debug=False, port=5000)
