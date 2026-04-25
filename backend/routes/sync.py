@@ -8,19 +8,21 @@ sync_bp = Blueprint("sync", __name__)
 
 @sync_bp.route("/sync", methods=["POST"])
 def sync_to_sheets():
-    if not get_credentials():
+    creds = get_credentials()
+    if not creds:
         return jsonify({"error": "Not authenticated"}), 401
 
     items = Item.query.all()
-    sync_all_items([item.to_dict() for item in items])
+    sync_all_items([item.to_dict() for item in items], creds)
     return jsonify({"status": "ok", "synced": len(items)})
 
 
 @sync_bp.route("/sync/status", methods=["GET"])
 def sync_status():
-    if not get_credentials():
+    creds = get_credentials()
+    if not creds:
         return jsonify({"error": "Not authenticated"}), 401
 
-    sheet_items = get_all_items()
+    sheet_items = get_all_items(creds)
     local_items = Item.query.count()
     return jsonify({"local": local_items, "sheet": len(sheet_items)})

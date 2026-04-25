@@ -1,8 +1,8 @@
 import uuid
-from flask import Blueprint, request, jsonify, Response
+from flask import Blueprint, request, jsonify
 from werkzeug.utils import secure_filename
 from services.auth_service import get_credentials
-from services.drive_service import upload_photo, delete_photo, get_photo
+from services.drive_service import upload_photo, delete_photo
 
 uploads_bp = Blueprint("uploads", __name__)
 
@@ -16,7 +16,8 @@ def _allowed(filename):
 
 @uploads_bp.route("/upload", methods=["POST"])
 def upload():
-    if not get_credentials():
+    creds = get_credentials()
+    if not creds:
         return jsonify({"error": "Not authenticated"}), 401
 
     if "photo" not in request.files:
@@ -30,24 +31,14 @@ def upload():
     filename = f"{uuid.uuid4().hex}.{ext}"
     mime_type = MIME_TYPES.get(ext, "image/jpeg")
 
-    photo_url = upload_photo(file.read(), filename, mime_type)
+    photo_url = upload_photo(file.read(), filename, mime_type, creds)
     return jsonify({"photo_url": photo_url}), 201
-
-
-@uploads_bp.route("/image/<file_id>")
-def proxy_image(file_id):
-    if not get_credentials():
-        return jsonify({"error": "Not authenticated"}), 401
-    try:
-        data, mime_type = get_photo(file_id)
-        return Response(data, mimetype=mime_type)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 
 
 @uploads_bp.route("/upload/<file_id>", methods=["DELETE"])
 def remove_photo(file_id):
-    if not get_credentials():
+    creds = get_credentials()
+    if not creds:
         return jsonify({"error": "Not authenticated"}), 401
-    delete_photo(file_id)
+    delete_photo(file_id, creds)
     return jsonify({"deleted": file_id})

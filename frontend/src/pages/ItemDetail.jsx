@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getItem, updateItem, deleteItem, uploadPhoto, authImageUrl } from '../services/itemService'
+import { getItem, updateItem, deleteItem, uploadPhoto } from '../services/itemService'
 import './ItemDetail.css'
 
 const TAGS = ['Plumbing', 'Electrical', 'Drywall', 'Lighting', 'Decor', 'Flooring', 'HVAC', 'General Hardware']
@@ -86,9 +86,7 @@ export default function ItemDetail({ itemId, navigate }) {
     }
   }
 
-  // What to show as the photo in edit mode:
-  // - new selection preview takes priority over existing server photo
-  const editPhotoSrc = photoPreview || (form?.photo_url ? authImageUrl(form.photo_url) : null)
+  const editPhotoSrc = photoPreview || form?.photo_url || null
 
   if (loading) return <div className="detail-state">Loading…</div>
   if (error && !item) return <div className="detail-state">{error}</div>
@@ -106,7 +104,7 @@ export default function ItemDetail({ itemId, navigate }) {
       {!editing ? (
         <main className="detail-body">
           {item.photo_url && (
-            <img className="detail-photo" src={authImageUrl(item.photo_url)} alt={item.name} />
+            <img className="detail-photo" src={item.photo_url} alt={item.name} />
           )}
           <h1 className="detail-name">{item.name}</h1>
           {item.description && <p className="detail-description">{item.description}</p>}
