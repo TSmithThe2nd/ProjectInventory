@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import Home from './pages/Home'
 import AddItem from './pages/AddItem'
 import ItemDetail from './pages/ItemDetail'
+import BoxList from './pages/BoxList'
+import BoxDetail from './pages/BoxDetail'
 
 function App() {
   const [page, setPage] = useState('home')
@@ -13,9 +15,10 @@ function App() {
     // Pick up token from URL after OAuth redirect
     const params = new URLSearchParams(window.location.search)
     const urlToken = params.get('token')
+    const boxParam = params.get('box')
     if (urlToken) {
       localStorage.setItem('auth_token', urlToken)
-      window.history.replaceState({}, '', '/')
+      window.history.replaceState({}, '', boxParam ? `/?box=${boxParam}` : '/')
     }
 
     const token = localStorage.getItem('auth_token')
@@ -32,6 +35,10 @@ function App() {
           window.location.href = '/api/auth/login'
         } else {
           setAuthChecked(true)
+          if (boxParam) {
+            window.history.replaceState({}, '', '/')
+            navigate('box-detail', parseInt(boxParam))
+          }
         }
       })
       .catch(() => setAuthChecked(true))
@@ -65,6 +72,8 @@ function App() {
       {page === 'home' && <Home navigate={navigate} offline={offline} />}
       {page === 'add-item' && <AddItem navigate={navigate} />}
       {page === 'item-detail' && <ItemDetail itemId={selectedId} navigate={navigate} />}
+      {page === 'box-list' && <BoxList navigate={navigate} />}
+      {page === 'box-detail' && <BoxDetail boxId={selectedId} navigate={navigate} />}
     </>
   )
 }

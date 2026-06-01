@@ -26,6 +26,14 @@
 }
 .sync-btn:disabled { opacity: 0.6; cursor: default; }
 
+.boxes-btn {
+  font-size: 13px; padding: 4px 12px;
+  background: var(--surface); color: var(--text-h);
+  border: 1px solid var(--border); border-radius: 6px; cursor: pointer;
+  font-weight: 500;
+}
+.boxes-btn:active { background: var(--bg); }
+
 .sync-msg { font-size: 13px; color: var(--text); }
 
 .home-controls {

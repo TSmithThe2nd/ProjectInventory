@@ -16,6 +16,7 @@ class Item(db.Model):
     photo_url   = db.Column(db.String(500), nullable=True)
     date_added  = db.Column(db.String(20), default=lambda: str(date.today()))
     added_by    = db.Column(db.String(100), default='')
+    box_id      = db.Column(db.Integer, db.ForeignKey('boxes.id'), nullable=True)
 
     def to_dict(self):
         return {
@@ -30,4 +31,6 @@ class Item(db.Model):
             'photo_url':   self.photo_url,
             'date_added':  self.date_added,
             'added_by':    self.added_by,
+            'box_id':      self.box_id,
+            'box_name':    self.box.name if self.box else None,
         }

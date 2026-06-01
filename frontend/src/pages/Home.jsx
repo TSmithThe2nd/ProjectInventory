@@ -62,6 +62,7 @@ export default function Home({ navigate, offline }) {
           >
             {syncing ? 'Syncing…' : 'Sync'}
           </button>
+          <button className="boxes-btn" onClick={() => navigate('box-list')}>Boxes</button>
           <span className="item-count">{items.length} items</span>
         </div>
       </header>

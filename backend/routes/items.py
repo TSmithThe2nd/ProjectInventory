@@ -25,6 +25,7 @@ def create_item():
         notes=data.get('notes', ''),
         photo_url=data.get('photo_url'),
         added_by=data.get('added_by', ''),
+        box_id=data.get('box_id'),
     )
     db.session.add(item)
     db.session.commit()
@@ -51,6 +52,7 @@ def update_item(item_id):
         item.tags = ','.join(tags) if isinstance(tags, list) else tags
     if 'notes' in data:       item.notes       = data['notes']
     if 'photo_url' in data:   item.photo_url   = data['photo_url']
+    if 'box_id' in data:      item.box_id      = data['box_id']
     db.session.commit()
     return jsonify(item.to_dict())
 

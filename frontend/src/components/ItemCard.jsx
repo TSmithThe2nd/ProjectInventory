@@ -25,6 +25,14 @@ export default function ItemCard({ item, onClick }) {
             )}
           </div>
         )}
+        {item.box_id && (
+          <div className="card-tags">
+            <span className="card-box-badge">
+              🗃️ BOX-{String(item.box_id).padStart(3, '0')}
+              {item.box_name ? ` ${item.box_name}` : ''}
+            </span>
+          </div>
+        )}
       </div>
       {item.quantity !== undefined && item.quantity !== '' && (
         <div className="card-qty-badge">

@@ -8,6 +8,7 @@ from routes.locations import locations_bp
 from routes.sync import sync_bp
 from routes.uploads import uploads_bp
 from routes.auth import auth_bp
+from routes.boxes import boxes_bp
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
@@ -24,9 +25,16 @@ app.register_blueprint(locations_bp, url_prefix="/api")
 app.register_blueprint(sync_bp, url_prefix="/api")
 app.register_blueprint(uploads_bp, url_prefix="/api")
 app.register_blueprint(auth_bp, url_prefix="/api")
+app.register_blueprint(boxes_bp, url_prefix="/api")
 
 with app.app_context():
     db.create_all()
+    from sqlalchemy import inspect as sa_inspect, text
+    _item_cols = [c['name'] for c in sa_inspect(db.engine).get_columns('items')]
+    if 'box_id' not in _item_cols:
+        with db.engine.connect() as _conn:
+            _conn.execute(text('ALTER TABLE items ADD COLUMN box_id INTEGER'))
+            _conn.commit()
     from models.item import Item
     from urllib.parse import urlparse, parse_qs
     _changed = False

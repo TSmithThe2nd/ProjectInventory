@@ -1,17 +1,23 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createItem, uploadPhoto } from '../services/itemService'
+import { getBoxes } from '../services/boxService'
 import './AddItem.css'
 
 const TAGS = ['Plumbing', 'Electrical', 'Drywall', 'Lighting', 'Decor', 'Flooring', 'HVAC', 'General Hardware']
 
 export default function AddItem({ navigate }) {
   const [form, setForm] = useState({
-    name: '', description: '', quantity: '', unit: '', location: '', tags: [], notes: '',
+    name: '', description: '', quantity: '', unit: '', location: '', tags: [], notes: '', box_id: null,
   })
   const [photoFile, setPhotoFile] = useState(null)
   const [photoPreview, setPhotoPreview] = useState(null)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
+  const [boxes, setBoxes] = useState([])
+
+  useEffect(() => {
+    getBoxes().then(setBoxes).catch(() => {})
+  }, [])
 
   const set = (field, value) => setForm(f => ({ ...f, [field]: value }))
 
@@ -101,6 +107,20 @@ export default function AddItem({ navigate }) {
           <input id="location" value={form.location} onChange={e => set('location', e.target.value)}
             placeholder="e.g. 123 Main St – Storage Room" />
         </div>
+        {boxes.length > 0 && (
+          <div className="field">
+            <label htmlFor="box">Box</label>
+            <select id="box" value={form.box_id ?? ''}
+              onChange={e => set('box_id', e.target.value ? parseInt(e.target.value) : null)}>
+              <option value="">— Not in a box —</option>
+              {boxes.map(b => (
+                <option key={b.id} value={b.id}>
+                  BOX-{String(b.id).padStart(3, '0')} — {b.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         <div className="field">
           <label>Tags</label>
           <div className="tag-grid">

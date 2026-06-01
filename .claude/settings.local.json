@@ -9,7 +9,12 @@
       "Bash(.venv/Scripts/python:*)",
       "Bash(.venv/Scripts/pip install:*)",
       "Bash(../.venv/Scripts/python -c \"from app import app; print\\('Flask app created OK'\\)\")",
-      "Bash(../venv/Scripts/python -c ' *)"
+      "Bash(../venv/Scripts/python -c ' *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\thebr\\\\IdeaProjects\\\\ProjectInventory\" -Force)",
+      "Bash(Select-Object Name, FullName)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(python -c \"import app\")"
     ]
   }
 }

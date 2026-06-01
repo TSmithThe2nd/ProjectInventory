@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { getItem, updateItem, deleteItem, uploadPhoto, authImageUrl } from '../services/itemService'
+import { getBoxes } from '../services/boxService'
 import './ItemDetail.css'
 
 const TAGS = ['Plumbing', 'Electrical', 'Drywall', 'Lighting', 'Decor', 'Flooring', 'HVAC', 'General Hardware']
@@ -14,11 +15,13 @@ export default function ItemDetail({ itemId, navigate }) {
   const [photoPreview, setPhotoPreview] = useState(null)
   const [saving, setSaving] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [boxes, setBoxes] = useState([])
 
   useEffect(() => {
     getItem(itemId)
       .then(data => { setItem(data); setLoading(false) })
       .catch(() => { setError('Item not found.'); setLoading(false) })
+    getBoxes().then(setBoxes).catch(() => {})
   }, [itemId])
 
   const startEdit = () => {
@@ -122,6 +125,15 @@ export default function ItemDetail({ itemId, navigate }) {
                 <span className="field-value">{item.location}</span>
               </div>
             )}
+            {item.box_id && (
+              <div className="detail-field">
+                <span className="field-label">Box</span>
+                <span className="field-value">
+                  BOX-{String(item.box_id).padStart(3, '0')}
+                  {item.box_name ? ` — ${item.box_name}` : ''}
+                </span>
+              </div>
+            )}
           </div>
 
           {item.tags?.length > 0 && (
@@ -206,6 +218,20 @@ export default function ItemDetail({ itemId, navigate }) {
             <label htmlFor="location">Location</label>
             <input id="location" value={form.location || ''} onChange={e => set('location', e.target.value)} />
           </div>
+          {boxes.length > 0 && (
+            <div className="field">
+              <label htmlFor="edit-box">Box</label>
+              <select id="edit-box" value={form.box_id ?? ''}
+                onChange={e => set('box_id', e.target.value ? parseInt(e.target.value) : null)}>
+                <option value="">— Not in a box —</option>
+                {boxes.map(b => (
+                  <option key={b.id} value={b.id}>
+                    BOX-{String(b.id).padStart(3, '0')} — {b.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <div className="field">
             <label>Tags</label>
             <div className="tag-grid">

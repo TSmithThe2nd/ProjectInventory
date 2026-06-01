@@ -103,3 +103,17 @@
   color: var(--text);
   margin-top: 2px;
 }
+
+.card-box-badge {
+  font-size: 11px;
+  padding: 2px 7px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  color: #1d4ed8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+  display: inline-block;
+}
