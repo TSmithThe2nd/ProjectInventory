@@ -13,7 +13,7 @@ export default function BoxList({ navigate }) {
   useEffect(() => {
     getBoxes()
       .then(data => { setBoxes(data); setLoading(false) })
-      .catch(() => setLoading(false))
+      .catch(err => { setError(err.message); setLoading(false) })
   }, [])
 
   const set = (field, value) => setForm(f => ({ ...f, [field]: value }))
@@ -71,7 +71,8 @@ export default function BoxList({ navigate }) {
 
       <main className="box-list-body">
         {loading && <p className="list-state">Loading…</p>}
-        {!loading && boxes.length === 0 && !showForm && (
+        {!loading && error && boxes.length === 0 && <p className="form-error">{error}</p>}
+        {!loading && boxes.length === 0 && !showForm && !error && (
           <div className="empty-state">
             <span className="empty-icon">🗃️</span>
             <h2>No boxes yet</h2>

@@ -14,7 +14,9 @@
       "Bash(Select-Object Name, FullName)",
       "Bash(npm install *)",
       "Bash(npm run *)",
-      "Bash(python -c \"import app\")"
+      "Bash(python -c \"import app\")",
+      "Bash(python -c \"from app import app, db; app.app_context\\(\\).push\\(\\); from sqlalchemy import inspect; i = inspect\\(db.engine\\); print\\('Tables:', i.get_table_names\\(\\)\\); from models.box import Box; boxes = Box.query.all\\(\\); print\\('Boxes:', [b.to_dict\\(\\) for b in boxes]\\)\")",
+      "PowerShell(Invoke-RestMethod -Uri \"http://localhost:5000/api/boxes\" -Method GET | ConvertTo-Json)"
     ]
   }
 }
