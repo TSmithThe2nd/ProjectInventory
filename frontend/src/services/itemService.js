@@ -1,19 +1,14 @@
-const BASE = '/api'
+import { BASE, authFetch, getAuthToken } from './api'
 
 export function authImageUrl(url) {
   if (!url || !url.startsWith('/api/image/')) return url
-  const token = localStorage.getItem('auth_token')
+  const token = getAuthToken()
   return token ? `${url}?token=${encodeURIComponent(token)}` : url
-}
-
-function authHeader() {
-  const token = localStorage.getItem('auth_token')
-  return token ? { 'Authorization': `Bearer ${token}` } : {}
 }
 
 export async function getItems() {
   try {
-    const res = await fetch(`${BASE}/items`, { headers: authHeader() })
+    const res = await authFetch(`${BASE}/items`)
     if (!res.ok) throw new Error('Failed to fetch items')
     const data = await res.json()
     localStorage.setItem('cached_items', JSON.stringify(data))
@@ -26,9 +21,9 @@ export async function getItems() {
 }
 
 export async function createItem(data) {
-  const res = await fetch(`${BASE}/items`, {
+  const res = await authFetch(`${BASE}/items`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...authHeader() },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   })
   if (!res.ok) throw new Error('Failed to create item')
@@ -36,7 +31,7 @@ export async function createItem(data) {
 }
 
 export async function getItem(id) {
-  const res = await fetch(`${BASE}/items/${id}`, { headers: authHeader() })
+  const res = await authFetch(`${BASE}/items/${id}`)
   if (!res.ok) throw new Error('Item not found')
   return res.json()
 }
@@ -44,15 +39,15 @@ export async function getItem(id) {
 export async function uploadPhoto(file) {
   const body = new FormData()
   body.append('photo', file)
-  const res = await fetch(`${BASE}/upload`, { method: 'POST', headers: authHeader(), body })
+  const res = await authFetch(`${BASE}/upload`, { method: 'POST', body })
   if (!res.ok) throw new Error('Failed to upload photo')
   return res.json()
 }
 
 export async function updateItem(id, data) {
-  const res = await fetch(`${BASE}/items/${id}`, {
+  const res = await authFetch(`${BASE}/items/${id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...authHeader() },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   })
   if (!res.ok) throw new Error('Failed to update item')
@@ -60,7 +55,7 @@ export async function updateItem(id, data) {
 }
 
 export async function deleteItem(id) {
-  const res = await fetch(`${BASE}/items/${id}`, { method: 'DELETE', headers: authHeader() })
+  const res = await authFetch(`${BASE}/items/${id}`, { method: 'DELETE' })
   if (!res.ok) throw new Error('Failed to delete item')
   return res.json()
 }

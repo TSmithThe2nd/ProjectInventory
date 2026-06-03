@@ -3,6 +3,7 @@ import SearchBar from '../components/SearchBar'
 import TagFilter from '../components/TagFilter'
 import ItemCard from '../components/ItemCard'
 import { getItems } from '../services/itemService'
+import { authFetch } from '../services/api'
 import API_BASE from '../config'
 import './Home.css'
 
@@ -19,12 +20,8 @@ export default function Home({ navigate, offline }) {
   const handleSync = async () => {
     setSyncing(true)
     setSyncMsg(null)
-    const token = localStorage.getItem('auth_token')
     try {
-      const res = await fetch(`${API_BASE}/api/sync`, {
-        method: 'POST',
-        headers: token ? { 'Authorization': `Bearer ${token}` } : {},
-      })
+      const res = await authFetch(`${API_BASE}/api/sync`, { method: 'POST' })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Sync failed')
       setSyncMsg(`Synced ${data.synced} items`)

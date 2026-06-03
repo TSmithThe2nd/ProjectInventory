@@ -1,5 +1,5 @@
 from flask import Blueprint, redirect, request, jsonify
-from services.auth_service import get_auth_url, exchange_code_for_token, verify_state, generate_auth_token, get_credentials
+from services.auth_service import get_auth_url, exchange_code_for_token, verify_state, generate_auth_token, get_credentials, get_valid_credentials
 from config import FRONTEND_URL
 
 auth_bp = Blueprint("auth", __name__)
@@ -31,7 +31,10 @@ def logout():
 
 @auth_bp.route("/auth/me")
 def me():
-    creds = get_credentials()
+    creds, new_token = get_valid_credentials()
     if not creds:
         return jsonify({"authenticated": False}), 401
-    return jsonify({"authenticated": True})
+    body = {"authenticated": True}
+    if new_token:
+        body["token"] = new_token
+    return jsonify(body)

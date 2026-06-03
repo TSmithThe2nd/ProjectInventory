@@ -38,6 +38,9 @@ self.addEventListener('fetch', event => {
     return
   }
 
+  // Network-only for all other API routes — never serve stale counts or data from cache
+  if (url.pathname.startsWith('/api/')) return
+
   // Pass through non-GET requests (POST, DELETE, etc.) without caching
   if (request.method !== 'GET') return
 

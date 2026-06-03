@@ -28,12 +28,21 @@ function App() {
     }
 
     fetch('/api/auth/me', { headers: { 'Authorization': `Bearer ${token}` } })
-      .then(res => res.json())
+      .then(res => {
+        if (res.status === 401) {
+          localStorage.removeItem('auth_token')
+          window.location.href = '/api/auth/login'
+          return null
+        }
+        return res.json()
+      })
       .then(data => {
+        if (!data) return
         if (!data.authenticated) {
           localStorage.removeItem('auth_token')
           window.location.href = '/api/auth/login'
         } else {
+          if (data.token) localStorage.setItem('auth_token', data.token)
           setAuthChecked(true)
           if (boxParam) {
             window.history.replaceState({}, '', '/')
