@@ -18,6 +18,12 @@
 
 .box-list-header h1 { font-size: 20px; flex: 1; margin-left: 8px; }
 
+.header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 .new-box-btn {
   font-size: 14px;
   font-weight: 600;
@@ -27,6 +33,90 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
+}
+
+.print-mode-btn {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 10px;
+  background: var(--surface);
+  color: var(--text-h);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.print-mode-btn:active { background: var(--bg); }
+
+/* ── Print selection mode ── */
+
+.print-header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.select-all-btn {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 10px;
+  background: var(--surface);
+  color: var(--text-h);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.select-all-btn:active { background: var(--bg); }
+
+.print-submit-btn {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 12px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.print-submit-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.select-circle {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  background: var(--surface);
+  position: relative;
+  transition: border-color 0.12s, background 0.12s;
+}
+
+.select-circle.checked {
+  border-color: var(--primary);
+  background: var(--primary);
+}
+
+.select-circle.checked::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 7px;
+  height: 11px;
+  border: 2px solid #fff;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+.box-card-selected {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, var(--surface));
 }
 
 .new-box-form {
@@ -146,4 +236,59 @@
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
+}
+
+/* ── Mass print sheet ── */
+
+.mass-print-sheet {
+  display: none;
+}
+
+@media print {
+  .no-print { display: none !important; }
+
+  .mass-print-sheet {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 4px;
+  }
+
+  .mass-print-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 12px;
+    border: 1.5px solid #000;
+    border-radius: 6px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    font-family: sans-serif;
+  }
+
+  .mass-print-label-text {
+    text-align: center;
+  }
+
+  .mass-print-label-id {
+    font-size: 10pt;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #444;
+  }
+
+  .mass-print-label-name {
+    font-size: 13pt;
+    font-weight: 700;
+    margin-top: 3px;
+    word-break: break-word;
+  }
+
+  .mass-print-label-location {
+    font-size: 9pt;
+    color: #666;
+    margin-top: 3px;
+  }
 }
